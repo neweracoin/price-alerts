@@ -1,0 +1,40 @@
+name: Price alerts
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # every 10 minutes (GitHub may run it a few minutes late)
+  workflow_dispatch:         # lets you run it now from the Actions tab
+
+concurrency: price-alerts
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Remembers which alerts already fired, so you don't get the same one every 10 minutes
+      - name: Load memory
+        uses: actions/cache/restore@v4
+        with:
+          path: state.json
+          key: alert-state-${{ github.run_id }}
+          restore-keys: alert-state-
+
+      - name: Check prices
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          FORCE_UPDATE: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
+        run: python check.py
+
+      - name: Save memory
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: state.json
+          key: alert-state-${{ github.run_id }}
