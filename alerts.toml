@@ -1,0 +1,43 @@
+# Your price alerts. Edit this file to add tokens or change targets.
+# Lines starting with # are notes and are ignored.
+
+# Times below use this time zone.
+timezone = "Africa/Lagos"
+
+# No regular price updates between these hours (24h clock). Price targets still alert.
+# Delete this line to get updates all night.
+quiet_hours = "23-7"
+
+
+# ---------- One block per token. Copy a block to add another. ----------
+
+[[token]]
+name = "ANSEM"
+chain = "solana"     # solana, ethereum, base, bsc, ...
+address = "9cRCn9rGT8V2imeM2BaKs13yhMEais3ruM3rPvTGpump"
+
+# Send the current price every N minutes. Use 0 to turn off.
+update_every_minutes = 10
+
+# Alert if the price moves this much (up or down) within an hour. Delete to turn off.
+move_alert_1h_percent = 15
+
+# Price targets. Each one alerts once, then again only after the price leaves and comes back.
+#   above: price goes at or above this
+#   below: price goes at or below this
+#   near:  price comes within +/- within_percent of this (default 3%)
+alerts = [
+  { when = "above", price = 0.25 },
+  { when = "below", price = 0.12 },
+  { when = "near",  price = 0.20, within_percent = 3 },
+]
+
+
+[[token]]
+name = "SOL"
+chain = "solana"
+address = "So11111111111111111111111111111111111111112"
+update_every_minutes = 60
+alerts = [
+  { when = "below", price = 100 },
+]
